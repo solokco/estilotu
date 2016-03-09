@@ -122,9 +122,9 @@ else:
 				<div class="col-sm-7 wpb_column column_container">
 					<div class="wpb_wrapper">					
 													
-						<form name="consulta-form" id="consulta-form" class="standard-form" action="<?php echo add_query_arg('id_servicio' , $this->id_servicio ) ?>" method="post">
+						<form name="consulta-form" id="consulta-form" class="standard-form" action="<?php echo add_query_arg( array('id_servicio' => $this->id_servicio , 'id_cita' => $this->id_cita ) ) ?>" method="post">
 							
-							<?php if (isset($id_cita) ): ?>
+							<?php if (!empty($this->id_cita) ): ?>
 								<h2><?php echo $consulta_online[0]->asesoria_titulo ?></h2>
 								<input type="hidden" name="asesoria_titulo" placeholder="Nombre de tu consulta" value="<?php echo $consulta_online[0]->asesoria_titulo ?>" maxlength="70" readonly />
 								
@@ -147,7 +147,7 @@ else:
 											<h4 class="fecha"><?php echo($consulta->update_time); ?></h4>
 											
 											<?php 
-											if ( isset($this->id_usuario) ): 
+											if ( !empty($this->id_usuario) ): 
 												if ($consulta->asesoria_autor == $this->id_usuario): ?>
 													<div class="imagen_usuario">
 														<?php echo get_avatar( $this->id_usuario , 64 ); ?>

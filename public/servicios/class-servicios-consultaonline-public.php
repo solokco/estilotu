@@ -27,6 +27,7 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 	private $id_usuario;
 	private $id_provider;
 	private $sql;
+	private $id_cita;
 	
 	public function __construct() {
 		global $wpdb; 
@@ -148,12 +149,24 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 						
 			global $current_user;
 			global $wpdb;
-
-			if ( isset($wp_query->query_vars['id_cita']) ):
-				$id_cita = $wp_query->query_vars['id_cita'] ;
-				$this->sql = $wpdb->prepare( "SELECT * FROM $this->tablename_asesoria WHERE id_cita = %d AND asesoria_service_id = %d" , $id_cita , $wp_query->query_vars['id_servicio'] );		
-				$consulta_online = $wpdb->get_results( $this->sql, OBJECT );				
-
+			
+			
+			
+			if ( isset( $_POST ) ):
+				
+				$this->id_cita = $this->guardad_servicio_online();
+				$this->id_servicio = $_POST["id_servicio"];
+				
+			endif;
+			
+			if ( !empty($wp_query->query_vars['id_cita']) || !empty($this->id_cita) ):
+			
+				$this->id_cita = !empty( $wp_query->query_vars['id_cita'] ) ? $wp_query->query_vars['id_cita'] : $this->id_cita ;
+				$this->sql = $wpdb->prepare( "SELECT * FROM $this->tablename_asesoria WHERE id_cita = %d AND asesoria_service_id = %d" , $this->id_cita , $wp_query->query_vars['id_servicio'] );		
+				$consulta_online = $wpdb->get_results( $this->sql, OBJECT );			
+				
+				echo $this->sql;
+				
 			endif;						
 			
 			$this->id_servicio 	= $wp_query->query_vars['id_servicio'];
@@ -163,10 +176,7 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 			$this->id_usuario 	= $current_user->ID;
 			
 			
-			if ( isset($_POST) )
-				$this->guardad_servicio_online();
-				
-
+			
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/consultasonline-display.php' ;
 		endif;
 	}
@@ -178,8 +188,6 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 	protected function guardad_servicio_online ( ) {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) && $_POST['action'] == 'post' ):
 			
-			
-			
 			if ( !is_user_logged_in() || !isset( $_POST['nonce_consulta_online'] ) || ! wp_verify_nonce( $_POST['nonce_consulta_online'], 'guardar_consulta_online' ) ):
 				 exit; 
 			
@@ -187,8 +195,9 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 
 				global $wpdb;
 				global $current_user;
+				global $wp_query;
 				
-				if (empty( $wp_query->query_vars['id_cita']) ) :
+				if ( empty( $wp_query->query_vars['id_cita']) || empty($this->id_cita ) ) :
 					$id_cita_max = $wpdb->get_var("SELECT MAX(id_cita) FROM $this->tablename_asesoria");
 					$id_cita_max++;
 				else:
@@ -203,7 +212,7 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 				$post_consulta		= wp_strip_all_tags( $_POST['asesoria_texto'] );
 				$id_servicio 		= wp_strip_all_tags( $_POST['id_servicio'] );
 				$autor 				= $current_user->ID;
-				$id_cita			= $id_cita_max;
+				$this->id_cita			= $id_cita_max;
 				
 				$data = array( 
 					'asesoria_provider_id' 		=> $this->id_provider, 
@@ -212,7 +221,7 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 					'asesoria_titulo'			=> $post_titulo,
 					'asesoria_texto'			=> $post_consulta,
 					'asesoria_autor'			=> $autor,
-					'id_cita'					=> $id_cita,
+					'id_cita'					=> $this->id_cita,
 					'update_time'	 			=> current_time("Y-m-d H:i:s")
 				);
 					
@@ -235,12 +244,15 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 						$to = $cliente->user_email;
 					endif;
 					
-					return ;
+					return $this->id_cita;
 						 
 				endif;
 			
 			endif;
 		endif;	
+		
+		return false;
+		
 	}
 	/* *********************************************** */
 	
