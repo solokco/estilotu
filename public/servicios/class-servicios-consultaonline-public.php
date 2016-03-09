@@ -150,15 +150,19 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 			global $current_user;
 			global $wpdb;
 			
-			
+			print_r($_POST);
 			
 			if ( isset( $_POST ) ):
 				
-				$this->id_cita = $this->guardad_servicio_online();
+				$this->id_cita = $this->guardar_servicio_online();
 				$this->id_servicio = $_POST["id_servicio"];
+
+				$this->sql = $wpdb->prepare( "SELECT * FROM $this->tablename_asesoria WHERE id_cita = %d AND asesoria_service_id = %d" , $this->id_cita , $this->id_servicio );		
+				$consulta_online = $wpdb->get_results( $this->sql, OBJECT );
 				
 			endif;
-			
+
+/*
 			if ( !empty($wp_query->query_vars['id_cita']) || !empty($this->id_cita) ):
 			
 				$this->id_cita = !empty( $wp_query->query_vars['id_cita'] ) ? $wp_query->query_vars['id_cita'] : $this->id_cita ;
@@ -167,7 +171,8 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 				
 				echo $this->sql;
 				
-			endif;						
+			endif;	
+*/					
 			
 			$this->id_servicio 	= $wp_query->query_vars['id_servicio'];
 			$servicio 			= get_post($this->id_servicio);
@@ -185,7 +190,7 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 	/* *********************************************** */
 	/* REGISTRAR SERVICIO ONLINE */
 	/* *********************************************** */
-	protected function guardad_servicio_online ( ) {
+	protected function guardar_servicio_online ( ) {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) && $_POST['action'] == 'post' ):
 			
 			if ( !is_user_logged_in() || !isset( $_POST['nonce_consulta_online'] ) || ! wp_verify_nonce( $_POST['nonce_consulta_online'], 'guardar_consulta_online' ) ):
@@ -197,14 +202,15 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 				global $current_user;
 				global $wp_query;
 				
+				echo "el id cita es " .  $wp_query->query_vars['id_cita'];
+				
 				if ( empty( $wp_query->query_vars['id_cita']) || empty($this->id_cita ) ) :
-					$id_cita_max = $wpdb->get_var("SELECT MAX(id_cita) FROM $this->tablename_asesoria");
-					$id_cita_max++;
+					$this->id_cita = $wpdb->get_var("SELECT MAX(id_cita) FROM $this->tablename_asesoria");
+					$this->id_cita++;
 				else:
-					$id_cita_max = $wp_query->query_vars['id_cita'];
+					$this->id_cita = !empty( $wp_query->query_vars['id_cita'] ) ? $wp_query->query_vars['id_cita'] : $this->id_cita ;
 				
 				endif;
-			
 										
 				$this->id_provider	= wp_strip_all_tags( $_POST['id_provider'] );
 				$user_id			= wp_strip_all_tags( $_POST['id_usuario'] );
@@ -212,7 +218,6 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 				$post_consulta		= wp_strip_all_tags( $_POST['asesoria_texto'] );
 				$id_servicio 		= wp_strip_all_tags( $_POST['id_servicio'] );
 				$autor 				= $current_user->ID;
-				$this->id_cita			= $id_cita_max;
 				
 				$data = array( 
 					'asesoria_provider_id' 		=> $this->id_provider, 
@@ -224,10 +229,10 @@ class EstiloTu_ServicioConsultaOnline extends Estilotu_Servicios {
 					'id_cita'					=> $this->id_cita,
 					'update_time'	 			=> current_time("Y-m-d H:i:s")
 				);
-					
-				$wpdb->insert( $this->tablename_asesoria , $data );	
+								
+				return $this->id_cita;
 				
-				if( FALSE === $result ) :
+				if( FALSE === $wpdb->insert( $this->tablename_asesoria , $data ) ) :
 				
 				    echo( "<div class='Centrar destacado_error'><span><i class='fa fa-warning'></i>Ups, se presentó un error y no se guardaron los datos.  Por favor intente más tarde!</span></div>" );
 				
