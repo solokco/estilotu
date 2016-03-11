@@ -34,6 +34,64 @@ jQuery(function( $ ) {
 		}
 
 	})
+	
+	jQuery("#fecha_inicio").datetimepicker({
+		prevText: '<i class="fa fa-chevron-left"></i>',
+		nextText: '<i class="fa fa-chevron-right"></i>',
+		dateFormat: 'yy-mm-dd',
+		timeFormat: 'HH:mm:ss',
+		stepMinute: 15,
+		timeOnlyTitle: 'Selecciona la hora',
+		timeText: 'Hora Final',
+		hourText: 'Hora',
+		minuteText: 'Minutos',
+		closeText: 'Seleccionar',
+		
+		showSecond: false,
+		minDate: 0,				
+		beforeShow: function(input, inst) {
+			var newclass = 'smart-forms'; 
+			var smartpikr = inst.dpDiv.parent();
+			if (!smartpikr.hasClass('smart-forms')){
+				inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
+			}
+		},
+		
+		onClose: function( selectedDate ) {
+			jQuery( "#fecha_fin" ).datepicker( "option", "minDate", selectedDate );
+		}
+		
+	});
+	
+	jQuery("#fecha_fin").datetimepicker({
+		prevText: '<i class="fa fa-chevron-left"></i>',
+		nextText: '<i class="fa fa-chevron-right"></i>',				
+		dateFormat: 'yy-mm-dd',
+		timeFormat: 'HH:mm:ss',
+		stepMinute: 15,
+		timeOnlyTitle: 'Selecciona la hora',
+		timeText: 'Hora Final',
+		hourText: 'Hora',
+		minuteText: 'Minutos',
+		closeText: 'Seleccionar',
+		
+		showSecond: false,
+		minDate: 0,				
+
+		beforeShow: function(input, inst) {
+			var newclass = 'smart-forms'; 
+			var smartpikr = inst.dpDiv.parent();
+			if (!smartpikr.hasClass('smart-forms')){
+				inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
+			}
+		},
+		
+		onClose: function( selectedDate ) {
+			jQuery( "#fecha_inicio" ).datepicker( "option", "maxDate", selectedDate );
+		}
+		
+	});
+
 	/* ************************************ */
 	
 	/* *************************************** */
@@ -57,11 +115,15 @@ jQuery(function( $ ) {
 	/* ************************************ */
 	/* REGULO EL TIPO DE NUMERO			 	*/
 	/* ************************************ */
-	jQuery('.auto').autoNumeric('init');	
+	// jQuery('.auto').autoNumeric('init');	
 	/* ************************************ */
 
 	jQuery('.ShowHide').formShowHide({
 		
+	}); 
+	
+	jQuery('.ShowHideReset').formShowHide({
+		resetClass: 'smartform-reset'
 	}); 
 	
 	

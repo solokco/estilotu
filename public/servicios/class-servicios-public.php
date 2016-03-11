@@ -27,6 +27,7 @@ class Estilotu_Servicios {
 	private $servicio;
 	private $servicio_meta;
 	private $servicios_categoria;
+	private $tipo_de_servicio;
 	private $post_id;
 	private	$fecha_seleccionada;
 	public	$table_name;
@@ -90,8 +91,23 @@ class Estilotu_Servicios {
 			/* SI VIENE POST LO VOY A GUARDAR */
 			/* ************************************ */
 			if ( !empty($_POST) ):
+				echo "<pre>";
+				print_r($_POST);
+				echo "</pre>";
 				
-				$this->guardar_servicio();			
+				$fecha_desde	= new DateTime($_POST['fecha_inicio']);
+				$fecha_hasta	= new DateTime($_POST['fecha_fin']);
+				
+				$hora_desde		= $fecha_desde->format('H:i:s');
+				$hora_hasta		= $fecha_hasta->format('H:i:s');
+				
+				$fecha_desde	= $fecha_desde->format('Y-m-d');
+				$fecha_hasta	= $fecha_hasta->format('Y-m-d');
+				
+				echo $fecha_desde;
+				echo $fecha_hasta;
+				
+				//$this->guardar_servicio();			
 			
 			else:
 							
@@ -140,7 +156,7 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-additional-methods');
 					wp_enqueue_script( 'smart-forms-cloneya');
 					wp_enqueue_script( 'et-lista_paises');
-					wp_enqueue_script( 'et-numeric');			
+					// wp_enqueue_script( 'et-numeric');			
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
 					wp_enqueue_script( 'google_maps_api');
@@ -155,7 +171,31 @@ class Estilotu_Servicios {
 				/* ************************************ 	*/
 				/* SI EL TIPO SELECCIONADO ES EVENTOS 		*/
 				/* ************************************ 	*/
-				elseif ( $wp_query->query_vars['tipo_servicio'] == 'eventos' ):
+				elseif ( $wp_query->query_vars['tipo_servicio'] == 'evento' ):
+					
+					$this->tipo_de_servicio = $wp_query->query_vars['tipo_servicio'];
+					
+					wp_enqueue_script( 'et-jquery-form-min');
+					wp_enqueue_script( 'smart-forms-steps');
+					wp_enqueue_script( 'smart-forms-validate');
+					wp_enqueue_script( 'smart-forms-additional-methods');
+					wp_enqueue_script( 'smart-forms-cloneya');
+					wp_enqueue_script( 'et-lista_paises');
+					// wp_enqueue_script( 'et-numeric');			
+					wp_enqueue_script( 'et-showHide');
+					wp_enqueue_script( 'smart-forms-custom-validate');
+					wp_enqueue_script( 'google_maps_api');
+					wp_enqueue_script( 'google_maps_marker');
+					wp_enqueue_script( 'smart-forms-timepicker');
+					wp_enqueue_script( 'smart-forms-custom');
+					
+					wp_enqueue_script( 'servicios_agregar');
+					
+					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-eventos-display.php' ;
+				
+				
+				
+				
 				
 				/* ************************************ 	*/
 				/* SI EL TIPO SELECCIONADO ES ONLINE 		*/
@@ -229,16 +269,17 @@ class Estilotu_Servicios {
 			endif;
 			
 			if ($tipo == "evento"):
-				$fecha_desde 	= wp_strip_all_tags( $_POST['et_date_from']  );
-				$fecha_hasta 	= wp_strip_all_tags( $_POST['et_date_to']  );
-				$tipo_evento	= wp_strip_all_tags( $_POST['tipo-evento']  );
+				$fecha_desde	= new DateTime($_POST['fecha_inicio']);
+				$fecha_hasta	= new DateTime($_POST['fecha_fin']);
+				
+				$hora_desde		= $fecha_desde->format('H:i:s');
+				$hora_hasta		= $fecha_hasta->format('H:i:s');
+				
+				$fecha_desde	= $fecha_desde->format('Y-m-d');
+				$fecha_hasta	= $fecha_hasta->format('Y-m-d');
 				
 				if ($tipo_evento == "tipo-evento-cupos"):
 					$cupos_evento = serialize($_POST['bloques_dias']);			
-				
-				else:
-					$horario_inicio = wp_strip_all_tags( $_POST['inicio_horario']  );
-					$horario_fin 	= wp_strip_all_tags( $_POST['fin_horario']  );
 				endif;
 				
 			endif;
@@ -310,7 +351,7 @@ class Estilotu_Servicios {
 				
 				if ($tipo == "evento"):				
 					// BUSCO LOS DATOS DE CUANDO EL SERVICIO VA A OCURRIR	
-					$finish_time_gmt = et_convert_time_to_gmt ( $fecha_hasta , $horario_fin );
+					// $finish_time_gmt = et_convert_time_to_gmt ( $fecha_hasta , $horario_fin );
 					
 					// ARGS A PASAR PARA EL HOOK
 					$args_scheduled = array(
@@ -318,10 +359,10 @@ class Estilotu_Servicios {
 					);
 					
 					//We pass $post_id because cron event arguments are required to remove the scheduled event
-					wp_clear_scheduled_hook( 'estilotu_eliminar_eventos_pasados' , $args_scheduled);
+					//wp_clear_scheduled_hook( 'estilotu_eliminar_eventos_pasados' , $args_scheduled);
 					
 					//Schedule the reminder
-					wp_schedule_single_event( $finish_time_gmt , 'estilotu_eliminar_eventos_pasados' , $args_scheduled );
+					//wp_schedule_single_event( $finish_time_gmt , 'estilotu_eliminar_eventos_pasados' , $args_scheduled );
 				endif;				
 					
 				/* ********************** 	*/ 
@@ -362,8 +403,8 @@ class Estilotu_Servicios {
 					if ($tipo_evento == "tipo-evento-cupos"):		
 						update_post_meta($post_id, 'bloques_dias', $cupos_evento  );
 					else:
-						update_post_meta($post_id, 'inicio_horario', $horario_inicio  );
-						update_post_meta($post_id, 'fin_horario',	 $horario_fin  );
+						update_post_meta($post_id, 'inicio_horario', $hora_desde  );
+						update_post_meta($post_id, 'fin_horario',	 $$hora_hasta  );
 					endif;
 					
 					
