@@ -107,7 +107,7 @@ class Estilotu_Servicios {
 				echo $fecha_desde;
 				echo $fecha_hasta;
 				
-				//$this->guardar_servicio();			
+				$this->guardar_servicio();			
 			
 			else:
 							

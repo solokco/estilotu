@@ -230,7 +230,7 @@ class Estilotu_Servicios_FrontEnd {
 		endif;
 		
 		
-		if ( $activo ):
+		if ( !$activo ):
 						
 			global $wpdb;
 			global $current_user;
@@ -240,38 +240,45 @@ class Estilotu_Servicios_FrontEnd {
 			
 			$citas = $wpdb->prepare("SELECT appoinment_time , appoinment_user_id FROM $this->table_name WHERE appoinment_date = %s AND appoinment_service_id = %d AND (appoinment_status = 'confirm' OR appoinment_status = 'hold' )" , $this->fecha_seleccionada , $this->id_servicio ); 						
 			$citas = $wpdb->get_results($citas , ARRAY_A);
+
+			ob_start("ob_gzhandler");
+			$return = "";
+			ob_end_clean();
 			
 			// Creo un array para las horas duplicadas de este dia
 			$ocupado = array();
-			foreach ($citas as $key => $value){
-			    foreach ($value as $key2 => $value2){
-			        
-			        if ( $key2 == "appoinment_time") {
-				        $index = $value2;
-				        if (array_key_exists($index, $ocupado)){
-				            $ocupado[$index]++;
-				        } else {
-				            $ocupado[$index] = 1;
-				        }	
-					}
-			    }   
-			}
+			if ( isset($citas) && is_array( $citas ) && !empty($citas) ):
+				foreach ($citas as $key => $value){
+				    foreach ($value as $key2 => $value2){
+				        
+				        if ( $key2 == "appoinment_time") {
+					        $index = $value2;
+					        if (array_key_exists($index, $ocupado)){
+					            $ocupado[$index]++;
+					        } else {
+					            $ocupado[$index] = 1;
+					        }	
+						}
+				    }   
+				}
+			endif;
 			
 			// Creo un array para las horas que el usuario ya tiene reserva
 			$reservado = array();
-			foreach ($citas as $key => $value){
-			    
-			    foreach ($value as $key2 => $value2){
-			        
-			        if ( $key2 == "appoinment_user_id" && $value2 == $user_ID ) {
-				        $index = $value["appoinment_time"];
-				        if (!array_key_exists($index, $reservado)){
-				            $reservado[$index] = true;
-				        }	
-					}
-				}	
-			}
-		 
+			if ( isset($citas) && is_array( $citas ) && !empty($citas) ):
+				foreach ($citas as $key => $value){
+				    
+				    foreach ($value as $key2 => $value2){
+				        
+				        if ( $key2 == "appoinment_user_id" && $value2 == $user_ID ) {
+					        $index = $value["appoinment_time"];
+					        if (!array_key_exists($index, $reservado)){
+					            $reservado[$index] = true;
+					        }	
+						}
+					}	
+				}
+			endif;
 			
 			$disponibilidad[$dia]["ocupado"] 	= $ocupado;
 			$disponibilidad[$dia]["reservado"] 	= $reservado;
@@ -287,8 +294,8 @@ class Estilotu_Servicios_FrontEnd {
 			ob_end_flush();
 		endif;
 
-		exit( json_encode($return) );
-
+		wp_send_json ($return) ;
+		wp_die();
 		
 		
 	}

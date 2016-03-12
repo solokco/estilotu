@@ -11,9 +11,6 @@
  * @package    Estilotu
  * @subpackage Estilotu/public/partials
  */
-
-print_r($this->servicio_meta);
-
 ?>
 
 
