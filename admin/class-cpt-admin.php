@@ -65,7 +65,7 @@ class Estilotu_Admin_CPT {
 			'menu_position' 		=> 5,
 			'hierarchical' 			=> false,
 			'supports' 				=> array('title','editor','author','thumbnail','excerpt','comments','custom-fields'),
-			'has_archive'			=> 'servicios',
+			'has_archive'			=> true,
 			'capability_type' 		=> 'post'
 			); 
 		

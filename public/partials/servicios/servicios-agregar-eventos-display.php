@@ -11,9 +11,6 @@
  * @package    Estilotu
  * @subpackage Estilotu/public/partials
  */
-
-print_r($this->servicio_meta);
-
 ?>
 
 
@@ -441,22 +438,62 @@ print_r($this->servicio_meta);
                         </div>
                 	</div><!-- end section -->
 				    
-				    <div id="evento_continuo" class="frm-row smartform-reset">
+				    <div id="evento_continuo" class="smartform-reset">
 					
-						<div class="section colm colm6">
-                            <label for="fecha_inicio" class="field prepend-icon">
-                            	<input type="text" id="fecha_inicio" name="fecha_inicio" class="gui-input" value="<?php echo isset( $this->servicio_meta['et_meta_latitud'] ) ? $this->servicio_meta['et_meta_latitud'][0] : '' ;  ?>">
-                                <span class="field-icon"><i class="fa fa-calendar"></i></span>  
-                            </label>
-                        </div><!-- end section -->
+						<div class="frm-row">
+							
+							<div class="section colm colm6">
+	                            <label for="fecha_inicio" class="field-label">Fecha de inicio</label>
+	                            
+	                            <label for="fecha_inicio" class="field prepend-icon">
+	                            	<input type="text" id="fecha_inicio" name="fecha_inicio" class="gui-input" readonly="readonly" readonly value="<?php echo isset( $this->servicio_meta['et_date_from'] ) ? $this->servicio_meta['et_date_from'][0] : '' ;  ?>">
+	                                <span class="field-icon"><i class="fa fa-calendar"></i></span>  
+	                            </label>
+	                        </div><!-- end section -->
+							
+							<div class="section colm colm6">
+	                            <label for="fecha_fin" class="field-label">Fecha de culminación</label>
+	                            
+	                            <label for="fecha_fin" class="field prepend-icon">
+	                            	<input type="text" id="fecha_fin" name="fecha_fin" class="gui-input" readonly="readonly" readonly value="<?php echo isset( $this->servicio_meta['et_date_to'] ) ? $this->servicio_meta['et_date_to'][0] : '' ;  ?>">
+	                                <span class="field-icon"><i class="fa fa-calendar"></i></span>  
+	                            </label>
+	                        </div><!-- end section -->
+	                        
+						</div>
 						
-						<div class="section colm colm6">
-                            <label for="fecha_fin" class="field prepend-icon">
-                            	<input type="text" id="fecha_fin" name="fecha_fin" class="gui-input">
-                                <span class="field-icon"><i class="fa fa-calendar"></i></span>  
-                            </label>
-                        </div><!-- end section -->
-					
+						<div class="frm-row"> 
+	                        <div class="section colm colm6">
+	                            <label for="hora_inicio" class="field-label">Hora de inicio</label>
+	                            
+	                            <label for="hora_inicio" class="field prepend-icon">
+	                            	<input type="text" id="hora_inicio" name="hora_inicio" class="gui-input" readonly="readonly" readonly value="<?php echo isset( $this->servicio_meta['et_time_from'] ) ? $this->servicio_meta['et_time_from'][0] : '' ;  ?>">
+	                                <span class="field-icon"><i class="fa fa-clock-o"></i></span>  
+	                            </label>
+	                        </div><!-- end section -->
+							
+							<div class="section colm colm6">
+	                            <label for="hora_fin" class="field-label">Hora de culminación</label>
+	                            
+	                            <label for="hora_fin" class="field prepend-icon">
+	                            	<input type="text" id="hora_fin" name="hora_fin" class="gui-input" readonly="readonly" readonly value="<?php echo isset( $this->servicio_meta['et_time_to'] ) ? $this->servicio_meta['et_time_to'][0] : '' ;  ?>">
+	                                <span class="field-icon"><i class="fa fa-clock-o"></i></span>  
+	                            </label>
+	                        </div><!-- end section -->
+						</div>
+						
+						<div class="frm-row">
+	                        
+	                        <div class="section colm colm12">
+	                            <label for="hora_fin" class="field-label">Cupos disponibles para tu evento</label>
+	                            
+	                            <label for="evento_cupos" class="field prepend-icon">
+	                            	<input type="number" placeholder='Cupos disponibles por evento...' min="0" max="9999" id="evento_cupos" name="evento_cupos" class="gui-input" value="<?php echo isset( $this->servicio_meta['evento_cupos'] ) ? $this->servicio_meta['evento_cupos'][0] : '' ;  ?>">
+	                                <span class="field-icon"><i class="fa fa-ticket"></i></span>  
+	                            </label>
+	                        </div><!-- end section -->
+	                        
+						</div>
 				    </div><!-- end #clone-animate --> 
 				    
 				    <div id="evento_porcupos" class="frm-row smartform-reset">

@@ -78,9 +78,7 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 		/* 	SI LA ACCION ES GUARDAR 			*/
 		/* ************************************ */
 		if ( isset($wp_query->query_vars['accion']) ):
-			
-			// print_r($_POST);
-			
+						
 			$accion_cita 	= $wp_query->query_vars['accion'];
 			$id_cita 		= $_POST['id_servicio'];
 			$fecha 			= $_POST["servicio_dia_seleccionado"];
@@ -88,6 +86,8 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 
 			if ( $this->guardarCita ( $id_cita , $fecha , $hora ) ):
 				echo "<h3>Ha guardado su cita exitosamente</h3>";
+			else:
+				echo "<h3>No se pudo guardar su cita, intente más tarde</h3>";
 			endif;
 	
 		endif;

@@ -100,7 +100,7 @@ jQuery(document).ready(function( $ ) {
 		if ( cupos == 0 || cupos == null )
 			return et_html = "<h2 class='sin_cupos'>No hay cupos disponibles para el "+ dia_seleccionado +"</h2>";
 			
-		et_html = "<h2>Cupos disponibles para " + dia_seleccionado + "</h2>";
+		et_html = 	"<h2>Cupos disponibles para " + dia_seleccionado + "</h2>";
 			
 		$.each(cupos.bloque , function( key, obj ) {
         	tiene_reserva = false;

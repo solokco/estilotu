@@ -216,13 +216,8 @@ class Estilotu_Miembro extends Estilotu_User {
 	/* PREPARA LA SECCION PARA LISTAR LOS SERVICIOS DEL USUARIO */
 	/* ******************************************************************* */
 	public function seccion_servicios() {
-
+		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/servicios/class-servicios-public.php'; 
-		
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-servicios-consultaonline-public.php'; //extends Estilotu_Servicios
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-servicios-cupos-public.php'; //extends Estilotu_Servicios
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-citas-listar-public.php'; //extends Estilotu_Servicios
-		
 		$citas = new Estilotu_Servicios();
 		
 		/* LLAMO EL SHORTCODE */

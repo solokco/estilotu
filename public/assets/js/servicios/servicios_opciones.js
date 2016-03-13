@@ -44,10 +44,28 @@ jQuery(function($) {
 				extension:"jpeg|jpg|png"
 			},								
 			
+			fecha_inicio: {
+				required: true
+			},
+			
+			fecha_fin: {
+				required: true
+			},
+			
+			hora_inicio: {
+				required: true
+			},
+			
+			hora_fin: {
+				required: true
+			},
+			
 			posttext: {
 				required: true,
 				minlength: 30
-			}												              
+			}
+			
+															              
 		}, // end rules
 		
 		messages: {					
@@ -83,6 +101,22 @@ jQuery(function($) {
 				required:'Necesitas una imagen para tu servicio',
 				extension:'Lo sentimos, la extensión de su imagen no está permitida'
 			},	
+			
+			fecha_inicio: {
+				required:'Por favor seleccione una fecha de inicio'
+			},
+			
+			fecha_fin: {
+				required:'Por favor seleccione una fecha de culminación'
+			},
+			
+			hora_inicio: {
+				required:'Por favor seleccione unaa hora de inicio'
+			},
+			
+			hora_fin: {
+				required:'Por favor seleccione una hora de culminación'
+			},
 						
 			posttext: {
 				required: 'Recuerda dar una breve descripci&oacute;n de este servicio',

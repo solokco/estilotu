@@ -24,6 +24,8 @@ class Estilotu_Public {
 
 	private $plugin_name;
 	private $version;
+	public 	$dias;
+	public 	$meses;
 
 	public function __construct( $plugin_name, $version ) {
 
@@ -105,5 +107,40 @@ class Estilotu_Public {
 		return $qvars;
 		}
 	/* ********************************************** */
+	
+	public function et_date_translate( $date ) {
+
+		$dias 	= array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+		$meses 	= array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+		
+		$return_date = array();
+		
+		$fecha_stamp 	= strtotime($date);
+		
+		$return_date["pass_var"]		= $date;
+		$return_date["stamp"]			= $fecha_stamp;
+		$return_date["date"]			= date('Y-m-d' , $fecha_stamp);
+		$return_date["dia_num"]			= date('d' , $fecha_stamp);
+		$return_date["dia_semana_num"] 	= date('w' , $fecha_stamp);
+		$return_date["dia_semana_txt"] 	= $dias[date('w' , $fecha_stamp)];
+		$return_date["mes_txt"] 		= $meses[date('n' , $fecha_stamp)];
+		$return_date["mes_num"] 		= date('n' , $fecha_stamp);	
+		$return_date["year_4num"] 		= date('Y' , $fecha_stamp);	
+		$return_date["year_2num"] 		= date('y' , $fecha_stamp);	
+		$return_date["meridiem"] 		= date('A' , $fecha_stamp);	
+		$return_date["hora_12"] 		= date('h' , $fecha_stamp);	
+		$return_date["hora_24"] 		= date('H' , $fecha_stamp);	
+		$return_date["minutos"] 		= date('i' , $fecha_stamp);	
+		$return_date["segundos"] 		= date('s' , $fecha_stamp);	
+		
+		$return_date["format_date"] 			= $return_date["dia_num"] . " de " . $return_date["mes_txt"] . " del " . $return_date["year_4num"];	
+		$return_date["format_time_12"] 			= $return_date["hora_12"] . ":" . $return_date["minutos"] . " " . $return_date["meridiem"];
+		$return_date["format_time_24"] 			= $return_date["hora_24"] . ":" . $return_date["minutos"] . ":" . $return_date["segundos"];	
+		$return_date["format_date_time_12"] 	= $return_date["dia_num"] . " de " . $return_date["mes_txt"] . " del " . $return_date["year_4num"] . " a las " . $return_date["hora_12"] . ":" . $return_date["minutos"] . " " . $return_date["meridiem"];	
+		$return_date["format_date_time_24"] 	= $return_date["dia_num"] . " de " . $return_date["mes_txt"] . " del " . $return_date["year_4num"] . " a las " . $return_date["hora_24"] . ":" . $return_date["minutos"] . ":" . $return_date["segundos"];	
+		
+		return $return_date;
+		
+	}	
 
 }

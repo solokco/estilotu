@@ -34,8 +34,82 @@ jQuery(function( $ ) {
 		}
 
 	})
+	/* ************************************ */
 	
-	jQuery("#fecha_inicio").datetimepicker({
+	/* ************************************ */
+    /* HORA INICIO Y FIN PARA EVENTOS	 	*/
+    /* ************************************ */	
+	jQuery( "#fecha_inicio" ).datepicker({
+		defaultDate: "+1w",
+		changeMonth: false,
+		numberOfMonths: 1,
+		minDate: 0,
+		dateFormat: 'yy-mm-dd',
+		prevText: '<i class="fa fa-chevron-left"></i>',
+		nextText: '<i class="fa fa-chevron-right"></i>',
+		
+		onClose: function( selectedDate ) {
+			jQuery( "#fecha_fin" ).datepicker( "option", "minDate", selectedDate );
+		}
+	});
+	
+	jQuery( "#fecha_fin" ).datepicker({
+		defaultDate: "+1w",
+		changeMonth: false,
+		numberOfMonths: 1,
+		minDate: 0,
+		dateFormat: 'yy-mm-dd',
+		prevText: '<i class="fa fa-chevron-left"></i>',
+		nextText: '<i class="fa fa-chevron-right"></i>',			
+		
+		onClose: function( selectedDate ) {
+			jQuery( "#fecha_inicio" ).datepicker( "option", "maxDate", selectedDate );
+		}
+	});
+	
+	jQuery('#hora_inicio').timepicker({
+		timeFormat: 'HH:mm:ss',
+		stepMinute: 15,
+		timeOnlyTitle: 'Selecciona la hora',
+		timeText: 'Hora Final',
+		hourText: 'Hora',
+		minuteText: 'Minutos',
+		closeText: 'Seleccionar',
+		showButtonPanel: 0,
+		showSecond: false,
+		
+		beforeShow: function(input, inst) {
+				var newclass = 'smart-forms'; 
+				var smartpikr = inst.dpDiv.parent();
+				if (!smartpikr.hasClass('smart-forms')){
+					inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
+				}
+		}					
+	
+	});
+	
+	jQuery('#hora_fin').timepicker({
+		timeFormat: 'HH:mm:ss',
+		stepMinute: 15,
+		timeOnlyTitle: 'Selecciona la hora',
+		timeText: 'Hora Final',
+		hourText: 'Hora',
+		minuteText: 'Minutos',
+		closeText: 'Seleccionar',
+		showButtonPanel: 0,
+		showSecond: false,
+		
+		beforeShow: function(input, inst) {
+				var newclass = 'smart-forms'; 
+				var smartpikr = inst.dpDiv.parent();
+				if (!smartpikr.hasClass('smart-forms')){
+					inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
+				}
+		}					
+	
+	});
+/*
+	jQuery("#fecha_inicio").datepicker({
 		prevText: '<i class="fa fa-chevron-left"></i>',
 		nextText: '<i class="fa fa-chevron-right"></i>',
 		dateFormat: 'yy-mm-dd',
@@ -46,26 +120,30 @@ jQuery(function( $ ) {
 		hourText: 'Hora',
 		minuteText: 'Minutos',
 		closeText: 'Seleccionar',
+		showButtonPanel: 0,
+		alwaysSetTime: 0,
 		
 		showSecond: false,
 		minDate: 0,				
+		
 		beforeShow: function(input, inst) {
-			var newclass = 'smart-forms'; 
-			var smartpikr = inst.dpDiv.parent();
-			if (!smartpikr.hasClass('smart-forms')){
-				inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
-			}
+				inst.dpDiv.unwrap().unwrap(smartpickerWrapper);
+				var smartpikr = inst.dpDiv.parent();
+				if (!smartpikr.hasClass('smart-forms')){
+					inst.dpDiv.wrap(smartpickerWrapper);
+				}
 		},
 		
-		onClose: function( selectedDate ) {
-			jQuery( "#fecha_fin" ).datepicker( "option", "minDate", selectedDate );
+		onClose: function( input, inst ) {
+			
+			jQuery( "#fecha_fin" ).datetimepicker( "option", "minDate", smartpickerWrapper );
 		}
 		
 	});
 	
-	jQuery("#fecha_fin").datetimepicker({
+	jQuery("#fecha_fin").datepicker({
 		prevText: '<i class="fa fa-chevron-left"></i>',
-		nextText: '<i class="fa fa-chevron-right"></i>',				
+		nextText: '<i class="fa fa-chevron-right"></i>',
 		dateFormat: 'yy-mm-dd',
 		timeFormat: 'HH:mm:ss',
 		stepMinute: 15,
@@ -74,23 +152,25 @@ jQuery(function( $ ) {
 		hourText: 'Hora',
 		minuteText: 'Minutos',
 		closeText: 'Seleccionar',
-		
 		showSecond: false,
-		minDate: 0,				
-
+		minDate: 0,
+		showButtonPanel: 0,
+						
 		beforeShow: function(input, inst) {
-			var newclass = 'smart-forms'; 
-			var smartpikr = inst.dpDiv.parent();
-			if (!smartpikr.hasClass('smart-forms')){
-				inst.dpDiv.wrap('<div class="'+newclass+'"></div>');
-			}
+				inst.dpDiv.unwrap().unwrap(smartpickerWrapper);
+				var smartpikr = inst.dpDiv.parent();
+				if (!smartpikr.hasClass('smart-forms')){
+					inst.dpDiv.wrap(smartpickerWrapper);
+				}
 		},
 		
-		onClose: function( selectedDate ) {
-			jQuery( "#fecha_inicio" ).datepicker( "option", "maxDate", selectedDate );
+		onClose: function(input, inst) {
+			console.log ("El input es " + input + " ; el Inst es " + inst);
+			jQuery( "#fecha_inicio" ).datetimepicker( "option", "maxDate", smartpickerWrapper );
 		}
 		
 	});
+*/
 
 	/* ************************************ */
 	
@@ -155,7 +235,9 @@ jQuery(function( $ ) {
 
 	/* ************************************ */
 		
-
+	/* ************************************ */
+	/* CLONACION DE HORARIOS			 	*/
+	/* ************************************ */
 	jQuery("body").on( "click", "a.delete"  , function( event ) {
 		event.preventDefault();
 		

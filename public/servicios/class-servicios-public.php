@@ -91,21 +91,11 @@ class Estilotu_Servicios {
 			/* SI VIENE POST LO VOY A GUARDAR */
 			/* ************************************ */
 			if ( !empty($_POST) ):
-/*
+				
 				echo "<pre>";
 				print_r($_POST);
 				echo "</pre>";
-*/
-				$fecha_desde	= new DateTime($_POST['fecha_inicio']);
-				$fecha_hasta	= new DateTime($_POST['fecha_fin']);
-				
-				$hora_desde		= $fecha_desde->format('H:i:s');
-				$hora_hasta		= $fecha_hasta->format('H:i:s');
-				
-				$fecha_desde	= $fecha_desde->format('Y-m-d');
-				$fecha_hasta	= $fecha_hasta->format('Y-m-d');
-				
-				
+
 				$this->guardar_servicio();			
 			
 			else:
@@ -153,7 +143,7 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-steps');
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
-					wp_enqueue_script( 'smart-forms-cloneya');
+					// wp_enqueue_script( 'smart-forms-cloneya');
 					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
@@ -164,10 +154,10 @@ class Estilotu_Servicios {
 					
 					wp_enqueue_script( 'servicios_agregar');
 					
-					wp_enqueue_style ('smart-form';
-					wp_enqueue_style ('smart-forms-min';
-					wp_enqueue_style ('smart-forms-purple';
-					wp_enqueue_style ('smart-forms-addons';
+					wp_enqueue_style ('smart-form');
+					wp_enqueue_style ('smart-forms-min');
+					wp_enqueue_style ('smart-forms-purple');
+					wp_enqueue_style ('smart-forms-addons');
 					
 					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-cupos-display.php' ;
 				
@@ -182,7 +172,7 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-steps');
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
-					wp_enqueue_script( 'smart-forms-cloneya');
+					// wp_enqueue_script( 'smart-forms-cloneya');
 					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
@@ -193,10 +183,10 @@ class Estilotu_Servicios {
 					
 					wp_enqueue_script( 'servicios_agregar');
 					
-					wp_enqueue_style ('smart-form';
-					wp_enqueue_style ('smart-forms-min';
-					wp_enqueue_style ('smart-forms-purple';
-					wp_enqueue_style ('smart-forms-addons';
+					wp_enqueue_style ('smart-form');
+					wp_enqueue_style ('smart-forms-min');
+					wp_enqueue_style ('smart-forms-purple');
+					wp_enqueue_style ('smart-forms-addons');
 					
 					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-eventos-display.php' ;
 				
@@ -276,14 +266,16 @@ class Estilotu_Servicios {
 			endif;
 			
 			if ($tipo == "evento"):
-				$fecha_desde	= new DateTime($_POST['fecha_inicio']);
-				$fecha_hasta	= new DateTime($_POST['fecha_fin']);
 				
-				$hora_desde		= $fecha_desde->format('H:i:s');
-				$hora_hasta		= $fecha_hasta->format('H:i:s');
+				$tipo_evento	= wp_strip_all_tags( $_POST['tipo_evento'] );
 				
-				$fecha_desde	= $fecha_desde->format('Y-m-d');
-				$fecha_hasta	= $fecha_hasta->format('Y-m-d');
+				$fecha_desde	= wp_strip_all_tags( $_POST['fecha_inicio'] );
+				$fecha_hasta	= wp_strip_all_tags( $_POST['fecha_fin'] );
+				
+				$hora_desde		= wp_strip_all_tags( $_POST['hora_inicio'] );
+				$hora_hasta		= wp_strip_all_tags( $_POST['hora_fin'] );
+				
+				$cupos_evento	= wp_strip_all_tags( $_POST['evento_cupos'] );
 				
 				if ($tipo_evento == "tipo-evento-cupos"):
 					$cupos_evento = serialize($_POST['bloques_dias']);			
@@ -410,8 +402,9 @@ class Estilotu_Servicios {
 					if ($tipo_evento == "tipo-evento-cupos"):		
 						update_post_meta($post_id, 'bloques_dias', $cupos_evento  );
 					else:
-						update_post_meta($post_id, 'inicio_horario', $hora_desde  );
-						update_post_meta($post_id, 'fin_horario',	 $$hora_hasta  );
+						update_post_meta($post_id, 'et_time_from', $hora_desde  );
+						update_post_meta($post_id, 'et_time_to',	 $hora_hasta  );
+						update_post_meta($post_id, 'evento_cupos', $cupos_evento  );
 					endif;
 					
 					
