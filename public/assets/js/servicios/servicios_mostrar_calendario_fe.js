@@ -6,30 +6,9 @@ jQuery(document).ready(function( $ ) {
 	jQuery.datetimepicker.setLocale('es');
 	
 	var logic = function( date , input ){
-	var cupos_disponibles;		
-		/*
-		if( currentDateTime.getDay()==6 ){
-			this.setOptions({
-				minTime:'11:00'
-			});
-		} 
-	
-		else
-			this.setOptions({
-				minTime:'8:00'
-			});
-		*/
-				
-		// jQuery("#loadingmessage").show();
-		
-/*
-		jQuery.post(ajaxurl, data, function(response) {
-			jQuery("#loadingmessage").hide();
-			jQuery(".lista_cupos_disponibles").html(response);
-			jQuery(".Contenedor_Cupos").css("display","block");
-			
-		});
-*/
+		var cupos_disponibles;		
+
+		jQuery("body").addClass("loading");
 		
 		$.ajax({
 	        url	: ajax_object.ajax_url,
@@ -45,18 +24,19 @@ jQuery(document).ready(function( $ ) {
 	         
 	        success: function( data, textStatus, jqXHR ) { // Si todo salio bien se ejecuta esto
 				
-				console.log(data);
-				
 				cupos_disponibles = mostrar_cupos( data , input.val() );
 				
 				jQuery(".lista_cupos_disponibles").html( cupos_disponibles );
-			
+				jQuery("body").removeClass("loading");
+				jQuery("#titulo_selecciona_cupo").hide();
+				
 			}
         })
         
         .fail(function( jqXHR, textStatus, errorThrown, data ) { // Si todo salio MAL se ejecuta esto
 			
 			alert('Ocurrio un error y no se pudo procesar su solicitud correctamente.');
+			jQuery("body").removeClass("loading");
 
         });
 	};
@@ -64,18 +44,40 @@ jQuery(document).ready(function( $ ) {
 	jQuery("#calendario_servicio").datetimepicker({
 		
 		onGenerate:function( ct ){
-			//jQuery(this).find('.xdsoft_date.xdsoft_weekend')
-			//.addClass('xdsoft_disabled');
+
+			var desactivar = "";
+			var max_array;
+			
+			max_array = php_vars.dias_desactivados.length;
+						
+			$.each(php_vars.dias_desactivados , function ( key , dia ) {
+				
+				if ( key >= max_array - 1  ) {
+					desactivar += '.xdsoft_date.xdsoft_day_of_week'+dia ;
+				}
+				else {
+					desactivar += '.xdsoft_date.xdsoft_day_of_week'+dia+', ' ;
+				}
+				
+				
+			});
+			
+			jQuery(this).find(desactivar).addClass('xdsoft_disabled');
+			
 		},
 		//weekends:['01.01.2014','02.01.2014','03.01.2014','04.01.2014','05.01.2014','06.01.2014'],
-
-		onChangeDateTime:logic,
-		timepicker	:false,
-		inline		:true,
-		format		:'Y-m-d',
-		minDate		:'0',//yesterday is minimum date(for today use 0 or -1970/01/01)
-		//maxDate	:'+1970/01/02',//tomorrow is maximum date calendar
-		dayOfWeekStart: 1,
+		
+		onChangeDateTime: logic,
+		dayOfWeekStart	: 1,
+		timepicker	: false,
+		inline		: true,
+		format		: 'Y-m-d',
+		minDate		: '0',//yesterday is minimum date(for today use 0 or -1970/01/01)
+		maxDate		: php_vars.max_date,//tomorrow is maximum date calendar
+		scrollMonth : false,
+		scrollInput : false,
+		yearStart 	: 2016
+		
 		//disabledDates: [],  		
 		
 	})
@@ -87,22 +89,27 @@ jQuery(document).ready(function( $ ) {
 		var ocupados;
 		var disponible;
 		var tiene_reserva;
-				
-		if ( cupos == 0 )
-			return et_html = "<h2 class='sin_cupos'>No hay cupos disponibles</h2>";
+		var close_time 		= php_vars.close_time * 1000;
+		var today 			= new Date();
+		var hora_actual 	= today.getTime();
+		var hora_servicio 	= new Date(dia_seleccionado);
+		
+		hora_servicio = hora_servicio.getTime() - close_time ;
+					
+		// si viene vacio o nulo regreso que NO HAY CUPOS
+		if ( cupos == 0 || cupos == null )
+			return et_html = "<h2 class='sin_cupos'>No hay cupos disponibles para el "+ dia_seleccionado +"</h2>";
 			
-		// convierto el json que recivo y hago el loop por el
-		et_html = "";
-		cupos = JSON.parse(cupos);
-				
+		et_html = "<h2>Cupos disponibles para " + dia_seleccionado + "</h2>";
+			
 		$.each(cupos.bloque , function( key, obj ) {
         	tiene_reserva = false;
         	disponible = obj.et_meta_cupos;
         	
-        	$.each(cupos.ocupado , function ( hora , veces_repedito ) {
+        	$.each(cupos.ocupado , function ( hora , veces_repetido ) {
 	        	
 	        	if ( hora == obj.et_meta_hora_inicio ) {
-		        	disponible = disponible - veces_repedito;
+		        	disponible = disponible - veces_repetido;
 	        	}
 	        	
         	});
@@ -131,12 +138,17 @@ jQuery(document).ready(function( $ ) {
 			et_html +=		   	"<input type='hidden' value='' id='et_meta_close_time' name='et_meta_close_time'> ";
         	
         	if (tiene_reserva) {
-	        	et_html +=		"<input disabled type='submit' value='Ya reservaste' class='button btn-morado agotado' id='boton_reservar' name='agotado'>"	
+	        	et_html +=		"<input disabled type='submit' value='Ya reservaste' class='button btn-morado servicio_reservado' id='boton_reservar' name='agotado'>"	;
         	}
         	
         	else if (disponible < 1 ) {
-				et_html +=		"<input disabled type='submit' value='Cupos agotados' class='button btn-morado agotado' id='boton_reservar' name='agotado'>"
+				et_html +=		"<input disabled type='submit' value='Cupos agotados' class='button btn-morado servicio_agotado' id='boton_reservar' name='agotado'>";
 			}
+			
+			else if ( hora_actual > hora_servicio ) {
+				et_html +=		"<input disabled type='submit' value='Clase cerrada' class='button btn-morado servicio_cerrado' id='boton_reservar' name='agotado'>";
+			}
+			
 			else {
 	        	et_html +=		"<input type='submit' value='reservar' class='button btn-morado' id='boton_reservar' name='is_reserve'>";
         	}

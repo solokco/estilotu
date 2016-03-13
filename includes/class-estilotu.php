@@ -205,7 +205,7 @@ class Estilotu {
 
 		/* FRONT END AJAX */
 		$this->loader->add_action( 'wp_ajax_et_notificar_solicitud_precio', $miembro_public, 'et_notificar_solicitud_precio' );
-		$this->loader->add_action( 'wp_ajax_et_cargar_cupos_func', $servicios, 'et_cargar_cupos_func' );
+		$this->loader->add_action( 'wp_ajax_et_cargar_cupos_func', $servicios_fe, 'et_cargar_cupos_func' );
 		
 		/* BUDDYPRESS */
 		$this->loader->add_action( 'bp_setup_nav', $miembro_public, 'buddypress_agregar_botones_menu' );

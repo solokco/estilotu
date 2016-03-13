@@ -1,0 +1,16 @@
+/* CALENDARIO */
+.xdsoft_datetimepicker.xdsoft_noselect.xdsoft_.xdsoft_inline {border:none;}
+td.xdsoft_date div {background-color:#703090;color:#FFF;padding:10px 20px;}
+.xdsoft_datetimepicker .xdsoft_calendar td > div:hover {background-color:#400e5a;}
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_disabled div {background-color: #CCC !important;color: #000 !important;}
+.xdsoft_datetimepicker .xdsoft_calendar .xdsoft_current div {background-color:#AD0090 !important;}
+/* CUPOS */
+.lista_cupos_disponibles {}
+.cupoDisponible {background: #F4F4F4;width:30%;float:left;border-radius:10px;box-shadow:0px 0px 10px #999;margin:1%;padding:10px;}
+.cupoDisponible header {background: #333;color: #FFF;font-size: 1.2em;padding: 10px;border-radius:10px 10px 0px 0px;}
+.cupoDisponible #boton_reservar {background: #703090;color: #FFF;border: none;padding: 10px;width: 100%;border-radius:0px 0px 10px 10px;}
+.cupoDisponible #boton_reservar:hover {background-color:#8A59A2;}
+
+.cupoDisponible #boton_reservar.servicio_reservado {background: #329039;}
+.cupoDisponible #boton_reservar.servicio_agotado {background: #A53A3A;}
+.cupoDisponible #boton_reservar.servicio_cerrado {background: #CCC;color:#000;}

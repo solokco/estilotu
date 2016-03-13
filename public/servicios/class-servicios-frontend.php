@@ -54,7 +54,7 @@ class Estilotu_Servicios_FrontEnd {
 		$url_guardar = add_query_arg( 'accion', 'guardar', bp_core_get_user_domain( get_current_user_id() ) . "citas" );	
 		
 		$disponibilidad = unserialize($this->servicio_meta['disponibilidad_servicio'][0]);
-						
+
 		/* ******************************************** */
 		/* EN CASO QUE SE TENGA LA ESTRUCTURA VIEJA 	*/
 		/* ******************************************** */
@@ -112,54 +112,87 @@ class Estilotu_Servicios_FrontEnd {
 			
 		endif;
 		*/
+		
+		
+		/* ****************************************** 		*/
+		/* BUSCO LOS DIAS LIBRES Y OCUPADOS DEL SERVICIO	*/
+		/* ******************************************		*/
+		$dias = array("domingo","lunes","martes","miercoles","jueves","viernes","sabado" );
+		$dias_activados = array();
+		$dias_desactivados = array();
 				
+		/* ****************************************** 	*/
+		/* SI SE ESTA USANDO LA VERSION 1.0 			*/
+		/* ******************************************	*/
 		if ( !isset($this->servicio_meta['disponibilidad_servicio']) && ( isset($cuposDomingo) || isset($cuposLunes) || isset($cuposMartes) || isset($cuposMiercoles) || isset($cuposJueves) || isset($cuposViernes) || isset($cuposSabado) ) ):
 		
 			$this->old_version = true;
-		
-		endif;
-		
-		//  ************************
-		
-		if ( is_user_logged_in() ):
-			?>		
-			<input id="calendario_servicio" type="text">
 
-			<div class='Contenedor_Cupos'>
-				<h2>Selecciona un día para ver los cupos disponibles</h2>
+			foreach ( $dias as $key_dia => $dia_disponible ):
 				
-				<h4>Cupos disponibles</h4>
-				<div class="lista_cupos_disponibles"></div>
-			
-			</div>
-			
-			<!--
-			<?php if ($vacaciones): ?>
-			vacaciones = <?php echo json_encode( $dias_vacaciones ); ?>;
-			vacaciones = JSON.stringify(vacaciones);
-			<?php endif; ?>
-			-->
+				if ( $this->servicio_meta['et_meta_dias_activo_'.$dia_disponible][0] == "on" ):
+				
+					$dias_activados[] = $key_dia;
+				
+				else:
+					
+					$dias_desactivados[] = $key_dia;
+					
+				endif;	
+
+			endforeach;
+		/* ******************************************	*/
 		
-		<?php
-		else:
-		
-			echo "<h3>Debes iniciar tu sesion o registrirte para poder reservar el servicio</h3>";
+		/* ****************************************** */
+		/* SI SE ESTA USANDO LA VERSION 2.0 */
+		/* ****************************************** */
+		elseif ( isset( $this->servicio_meta["disponibilidad_servicio"][0]  ) ):
+			
+			$disponibilidad = unserialize($this->servicio_meta['disponibilidad_servicio'][0]);
+				
+			foreach ( $dias as $key_dia => $dia_disponible ):
+
+				if ( array_key_exists ("activo" , $disponibilidad[$dia_disponible]) ):
+				
+					$dias_activados[] = $key_dia;
+				
+				else:
+					
+					$dias_desactivados[] = $key_dia;
+					
+				endif;	
+
+			endforeach;
 		
 		endif;
+		/* ****************************************** */
 		
-
+		
+		$max_date = date_i18n('Y-m-d');
+		$max_date = strtotime($max_date);
+		$max_date = strtotime( $this->servicio_meta['et_meta_max_time'][0] . " day", $max_date);		
+		$max_date = date('Y-m-d' , $max_date);
+		
 		$datatoBePassed = array(
 			'id_servicio' 	=> $this->post_id,
 			'url_user'		=> $url_guardar,	
-			'old_version'	=> $this->old_version
+			'old_version'	=> $this->old_version,
+			'dias_activados' => $dias_activados,
+			'dias_desactivados' => $dias_desactivados,
+			'max_date'			=> $max_date,
+			'close_time'		=> $this->servicio_meta["et_meta_close_time"][0]
 		);
 		
 		wp_enqueue_script( 'et_mostrar_calendario_fe');
 		wp_localize_script( 'et_mostrar_calendario_fe', 'php_vars', $datatoBePassed );
-		
 		wp_enqueue_script( 'et_datetimepicker');
-				
+
 		wp_enqueue_style('et_datetimepicker');
+		wp_enqueue_style('et_servicios');
+		
+		
+		// ARCHIVO FRONT
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicio-reservar.php' ;
 					
 	}
 	
@@ -169,12 +202,12 @@ class Estilotu_Servicios_FrontEnd {
 	/* *********************************************** */
 	public function et_cargar_cupos_func( ) {
 		
-		$this->id_servicio 			= $_POST['id_servicio'];
+		$this->post_id 				= $_POST['id_servicio'];
 		$this->fecha_seleccionada 	= $_POST['fecha_seleccionada'];
 		$this->dia_seleccionado		= $_POST['dia_seleccionado'];
 		$this->old_version			= $_POST['is_old'];
 		
-		$this->servicio_meta = get_post_custom($this->id_servicio) ;
+		$this->servicio_meta = get_post_custom($this->post_id) ;
 		
 		$activo = false;
 		
@@ -220,7 +253,7 @@ class Estilotu_Servicios_FrontEnd {
 			if ( isset( $this->servicio_meta["disponibilidad_servicio"][0]  ) ):
 				$disponibilidad = unserialize($this->servicio_meta['disponibilidad_servicio'][0]);
 				
-				if ($disponibilidad[$dia]["activo"] == "on" || $disponibilidad[$dia]["activo"] == "off" )
+				if ( $disponibilidad[$dia]["activo"] )
 					$activo = true;
 				else
 					$activo = false;
@@ -238,48 +271,51 @@ class Estilotu_Servicios_FrontEnd {
 			$this->table_name = $wpdb->prefix . "bb_appoinments";
 			$user_ID = get_current_user_id();
 			
-			$citas = $wpdb->prepare("SELECT appoinment_time , appoinment_user_id FROM $this->table_name WHERE appoinment_date = %s AND appoinment_service_id = %d AND (appoinment_status = 'confirm' OR appoinment_status = 'hold' )" , $this->fecha_seleccionada , $this->id_servicio ); 						
+			$citas = $wpdb->prepare("SELECT appoinment_time , appoinment_user_id FROM $this->table_name WHERE appoinment_date = %s AND appoinment_service_id = %d AND (appoinment_status = 'confirm' OR appoinment_status = 'hold' )" , $this->fecha_seleccionada , $this->post_id ); 						
 			$citas = $wpdb->get_results($citas , ARRAY_A);
 			
-			// Creo un array para las horas duplicadas de este dia
-			$ocupado = array();
-			foreach ($citas as $key => $value){
-			    foreach ($value as $key2 => $value2){
-			        
-			        if ( $key2 == "appoinment_time") {
-				        $index = $value2;
-				        if (array_key_exists($index, $ocupado)){
-				            $ocupado[$index]++;
-				        } else {
-				            $ocupado[$index] = 1;
-				        }	
-					}
-			    }   
-			}
-			
-			// Creo un array para las horas que el usuario ya tiene reserva
-			$reservado = array();
-			foreach ($citas as $key => $value){
-			    
-			    foreach ($value as $key2 => $value2){
-			        
-			        if ( $key2 == "appoinment_user_id" && $value2 == $user_ID ) {
-				        $index = $value["appoinment_time"];
-				        if (!array_key_exists($index, $reservado)){
-				            $reservado[$index] = true;
-				        }	
-					}
-				}	
-			}
-		 
-			
-			$disponibilidad[$dia]["ocupado"] 	= $ocupado;
-			$disponibilidad[$dia]["reservado"] 	= $reservado;
-							
-			ob_start("ob_gzhandler");
-				$return = $disponibilidad[$dia];					
-			ob_end_clean();
+			if ( isset($citas) && is_array($citas) ):
 				
+				// Creo un array para las horas duplicadas de este dia
+				$ocupado = array();
+				foreach ($citas as $key => $value){
+				    foreach ($value as $key2 => $value2){
+				        
+				        if ( $key2 == "appoinment_time") {
+					        $index = $value2;
+					        if (array_key_exists($index, $ocupado)){
+					            $ocupado[$index]++;
+					        } else {
+					            $ocupado[$index] = 1;
+					        }	
+						}
+				    }   
+				}
+				
+				// Creo un array para las horas que el usuario ya tiene reserva
+				$reservado = array();
+				foreach ($citas as $key => $value){
+				    
+				    foreach ($value as $key2 => $value2){
+				        
+				        if ( $key2 == "appoinment_user_id" && $value2 == $user_ID ) {
+					        $index = $value["appoinment_time"];
+					        if (!array_key_exists($index, $reservado)){
+					            $reservado[$index] = true;
+					        }	
+						}
+					}	
+				}
+			 
+				
+				$disponibilidad[$dia]["ocupado"] 	= $ocupado;
+				$disponibilidad[$dia]["reservado"] 	= $reservado;
+								
+				ob_start("ob_gzhandler");
+					$return = $disponibilidad[$dia];					
+				ob_end_clean();
+				
+			endif;	
 		
 		else:
 			ob_start("ob_gzhandler");
@@ -287,8 +323,9 @@ class Estilotu_Servicios_FrontEnd {
 			ob_end_flush();
 		endif;
 
-		exit( json_encode($return) );
-
+		wp_send_json($return) ;
+		
+		wp_die();
 		
 		
 	}

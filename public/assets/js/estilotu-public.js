@@ -1,6 +1,13 @@
 (function( $ ) {
 	'use strict';
 
+	// Agrego el DIV para la seccion de LOADING
+	$(function() {
+		jQuery("body").append("<div class='et_loading'></div>");
+	});
+	
+	
+	
 	/**
 	 * All of the code for your public-facing JavaScript source
 	 * should reside in this file.

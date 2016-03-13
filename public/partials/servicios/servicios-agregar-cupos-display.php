@@ -320,7 +320,7 @@
 							    <div class="option-group field">
 							    
 							        <label class="switch">
-							            <input type="checkbox" class="ShowHide" data-show-id="contenedor_mapa" name="ubicacion[et_meta_usar_mapa]" id="et_meta_usar_mapa" <?php isset( $this->servicio_meta['et_meta_usar_mapa'][0] ) ? checked( $this->servicio_meta['et_meta_usar_mapa'][0], 'on' ) : checked( $this->servicio_meta['et_meta_usar_mapa'][0], 'off' ); ?>>
+							            <input type="checkbox" class="ShowHide" data-show-id="contenedor_mapa" name="ubicacion[et_meta_usar_mapa]" id="et_meta_usar_mapa" <?php isset( $this->servicio_meta['et_meta_usar_mapa'][0] ) ? checked( $this->servicio_meta['et_meta_usar_mapa'][0], 'on' ) : '' ; ?>>
 							            <span class="switch-label" data-on="ON" data-off="OFF"></span>
 							            <span> Deseo mostrar la ubicaci&oacute;n de mi servicio </span>
 							        </label>										                            
@@ -465,19 +465,19 @@
 							
 				            <div class="option-group field">									
 				                <label class="option">
-				                    <input type="checkbox" name="disponible[<?php echo $dia_txt ?>][activo]" class="ShowHide" value="<?php echo $disponible[$dia_txt]["activo"] == "on" ? "on" : 'off' ?>" data-show-id="contenedor_<?php echo $dia_txt; ?>" <?php echo isset( $disponible[$dia_txt]["activo"] ) ? "checked" : '' ?> >
+				                    <input type="checkbox" name="disponible[<?php echo $dia_txt ?>][activo]" class="ShowHideReset" value="<?php echo true; ?>" data-show-id="contenedor_<?php echo $dia_txt; ?>" <?php echo isset( $disponible[$dia_txt]["activo"] ) ? "checked" : '' ?> >
 									<span class="checkbox"></span> <?php echo $dia_txt; ?>  
 				                </label>
 				            </div>
 				            
-				            <div id="contenedor_<?php echo $dia_txt; ?>" class="contenedor_dia">
+				            <div id="contenedor_<?php echo $dia_txt; ?>" class="contenedor_dia smartform-reset">
 				                
 				                <?php 
 								
-								if ($disponible[$dia_txt]["activo"] ): 
+								if ( isset( $disponible[$dia_txt]["activo"] ) && $disponible[$dia_txt]["activo"] ): 
 									$key = 0;
 									foreach ( $disponible[$dia_txt]["bloque"] as $cupo ):
-
+										
 						                $hora_final = $cupo["et_meta_hora_inicio"]; ?>
 
 						                <div class="clone_<?php echo $dia_txt; ?> frm-row" id="<?php echo $dia_txt . "_" . $dia . "_" . $key ?>" >
@@ -552,7 +552,6 @@
 
 						        <?php
 						        else: 
-						        	
 						        	$key = 0; ?>
 						        
 						        	<div class="clone_<?php echo $dia_txt; ?> frm-row" id="<?php echo $dia_txt . "_" . $dia . "_" . $key ?>" >

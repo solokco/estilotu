@@ -36,10 +36,12 @@ class Estilotu_Public {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/css/estilotu-public.css', array(), $this->version, 'all' );
 		
-		wp_enqueue_style( 'smart-forms'			, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-forms.css', array(), $this->version, 'all' );
-		wp_enqueue_style( 'smart-forms-min'		, plugin_dir_url( __FILE__ ) . 'assets/css/forms/font-awesome.min.css', array('smart-forms'), $this->version, 'all' );
-		wp_enqueue_style( 'smart-forms-purple'	, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-themes/purple.css', array('smart-forms' , 'smart-forms-min'), $this->version, 'all' );
-		wp_enqueue_style( 'smart-forms-addons'	, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-addons.css', array('smart-forms' , 'smart-forms-min'), $this->version, 'all' );
+		wp_register_style( 'smart-forms'			, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-forms.css', array(), $this->version, 'all' );
+		wp_register_style( 'smart-forms-min'		, plugin_dir_url( __FILE__ ) . 'assets/css/forms/font-awesome.min.css', array('smart-forms'), $this->version, 'all' );
+		wp_register_style( 'smart-forms-purple'	, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-themes/purple.css', array('smart-forms' , 'smart-forms-min'), $this->version, 'all' );
+		wp_register_style( 'smart-forms-addons'	, plugin_dir_url( __FILE__ ) . 'assets/css/forms/smart-addons.css', array('smart-forms' , 'smart-forms-min'), $this->version, 'all' );
+		
+		wp_register_style( 'et_servicios'	, plugin_dir_url( __FILE__ ) . 'assets/css/servicios/servicios.css', array() , $this->version, 'all' );
 		
 		wp_register_style( 'et_datetimepicker'	, plugin_dir_url( __FILE__ ) . 'assets/css/servicios/jquery.datetimepicker.css', array(), $this->version, 'all' );
 

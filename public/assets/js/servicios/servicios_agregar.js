@@ -123,7 +123,7 @@ jQuery(function( $ ) {
 	}); 
 	
 	jQuery('.ShowHideReset').formShowHide({
-		resetClass: 'smartform-reset'
+		// resetClass: 'smartform-reset'
 	}); 
 	
 	

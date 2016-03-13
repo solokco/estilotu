@@ -91,10 +91,11 @@ class Estilotu_Servicios {
 			/* SI VIENE POST LO VOY A GUARDAR */
 			/* ************************************ */
 			if ( !empty($_POST) ):
+/*
 				echo "<pre>";
 				print_r($_POST);
 				echo "</pre>";
-				
+*/
 				$fecha_desde	= new DateTime($_POST['fecha_inicio']);
 				$fecha_hasta	= new DateTime($_POST['fecha_fin']);
 				
@@ -104,10 +105,8 @@ class Estilotu_Servicios {
 				$fecha_desde	= $fecha_desde->format('Y-m-d');
 				$fecha_hasta	= $fecha_hasta->format('Y-m-d');
 				
-				echo $fecha_desde;
-				echo $fecha_hasta;
 				
-				//$this->guardar_servicio();			
+				$this->guardar_servicio();			
 			
 			else:
 							
@@ -155,8 +154,7 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
 					wp_enqueue_script( 'smart-forms-cloneya');
-					wp_enqueue_script( 'et-lista_paises');
-					// wp_enqueue_script( 'et-numeric');			
+					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
 					wp_enqueue_script( 'google_maps_api');
@@ -165,6 +163,11 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-custom');
 					
 					wp_enqueue_script( 'servicios_agregar');
+					
+					wp_enqueue_style ('smart-form';
+					wp_enqueue_style ('smart-forms-min';
+					wp_enqueue_style ('smart-forms-purple';
+					wp_enqueue_style ('smart-forms-addons';
 					
 					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-cupos-display.php' ;
 				
@@ -180,8 +183,7 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
 					wp_enqueue_script( 'smart-forms-cloneya');
-					wp_enqueue_script( 'et-lista_paises');
-					// wp_enqueue_script( 'et-numeric');			
+					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
 					wp_enqueue_script( 'google_maps_api');
@@ -190,6 +192,11 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-custom');
 					
 					wp_enqueue_script( 'servicios_agregar');
+					
+					wp_enqueue_style ('smart-form';
+					wp_enqueue_style ('smart-forms-min';
+					wp_enqueue_style ('smart-forms-purple';
+					wp_enqueue_style ('smart-forms-addons';
 					
 					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-eventos-display.php' ;
 				
