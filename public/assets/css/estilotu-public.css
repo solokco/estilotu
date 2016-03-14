@@ -28,3 +28,16 @@ body.loading {
 body.loading .et_loading {
     display: block;
 }
+
+.dias.masonry {margin-top:10px;text-align:center;position:static;}
+	.dias.masonry ul {margin:0px;padding:0px;}
+	.dias.masonry li {display:inline-block;text-align:center !important;width:25px;height:25px;margin-bottom: 1px;margin-bottom:1px;font-size:15px;text-align:center;font-size:10px;}
+	
+	.dias.masonry .dia_circulo {border-radius:100%;color:#FFF;width:20px;height:20px;padding:0px;}
+	
+.dias {position: absolute;right: 0px;bottom: 45px;}
+	.dias li {display: block;text-align:center !important;width: 40px;height: 30px;margin-bottom: 1px;padding-top:5px;width:40px;height:30px;margin-bottom:1px;font-size:15px;}
+
+.dia_circulo{border-radius:5px 0px 0px 5px;color:#FFF;width:20px;height:20px;}
+.dia_activo{background:#703090;}
+.dia_inactivo{background:rgba(0,0,0,0.39);}
