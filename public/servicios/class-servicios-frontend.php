@@ -397,7 +397,4 @@ class Estilotu_Servicios_FrontEnd {
 	    return $t1 - $t2;
 	}
 	
-
-	
-	
 }

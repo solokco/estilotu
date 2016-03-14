@@ -48,9 +48,10 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 		global $wp_query;
 		global $current_user;
 						
-		//wp_enqueue_script('et_calendario_post'); 
-		//wp_enqueue_style( 'et_calendario_post_style' );
 
+		wp_enqueue_style ('et_citas');
+		wp_enqueue_style ('smart-forms-min');
+		
 		/* ************************** */
 		/* 	VALIDO SI ES PROFESIONAL */
 		/* ************************** */
@@ -77,7 +78,7 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 		/* ************************************ */
 		/* 	SI LA ACCION ES GUARDAR 			*/
 		/* ************************************ */
-		if ( isset($wp_query->query_vars['accion']) ):
+		if ( isset($wp_query->query_vars['accion']) && !empty($_POST) ):
 						
 			$accion_cita 	= $wp_query->query_vars['accion'];
 			$id_cita 		= $_POST['id_servicio'];
@@ -85,7 +86,7 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 			$hora 			= $_POST["et_meta_hora_inicio"];
 
 			if ( $this->guardarCita ( $id_cita , $fecha , $hora ) ):
-				echo "<h3>Ha guardado su cita exitosamente</h3>";
+				echo "<div class='Centrar destacado_success'><span><i class='fa fa-check'></i>La consulta fue agregada con éxito!</span></div>";
 			else:
 				echo "<h3>No se pudo guardar su cita, intente más tarde</h3>";
 			endif;
@@ -98,6 +99,10 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 		$citas_pautadas = $this->listarCitas();
 		
 		if ( $citas_pautadas || $this->es_historial ): 
+			
+			wp_enqueue_script ('et_front_end_citas');
+			add_action( 'wp_ajax_et_asistencia_y_pago_participante', 'et_asistencia_y_pago_participante' );
+			
 						
 			$servicios = Estilotu_Miembro::listarServicios( $current_user->ID );
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/citas/listar-citas-display.php' ;
@@ -107,7 +112,6 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 		else: ?>
 			<h2>No hay citas pautadas</h2>
 			
-			<a class="btn boton_copia_1 btn-primary btn-lg btn-special boton_fullwidth" href="<?php echo add_query_arg( array('servicios' => 'historial' ) ) ?>"><i class="icon-tags"></i> Historial de mis citas</a>
 		<?php 
 		endif; 
 	} 
@@ -214,10 +218,49 @@ class EstiloTu_Citas extends Estilotu_Servicios {
 					'update_time'	 			=> current_time("Y-m-d H:i:s")
 				);
 		
-		print_r($data);
-		
 		return $wpdb->insert( $this->tablename_citas , $data);	
 	}
 	/* *********************************************** */
+	
+	/* ************************************************* */ 
+	/* REGISTRAR ASISTENCIA DE PARTICIPANTE */
+	/* ************************************************* */ 
+	public function et_asistencia_y_pago_participante() {
+		
+		/* *********************** */
+		/* REVISO SEGURIDAD */
+		/* *********************** */
+	
+		// check_ajax_referer( 'et_ajax_asistencia_y_pago_participante_nonce' , 'security' );
+	
+		/* *********************** */
+		global $wpdb;
+		$tablename = $wpdb->prefix . "bb_appoinments";
+		
+		$id_cita = $_POST['id_cita'];
+			
+		if ( isset( $_POST['appoinment_user_assist'] ) ):
+			$data = array(
+					'appoinment_user_assist' => $_POST['appoinment_user_assist']
+				);
+		
+		elseif ( isset( $_POST['appoinment_user_paid'] ) ):
+			$data = array(
+					'appoinment_user_paid' => $_POST['appoinment_user_paid']
+				);
+		
+		endif;
+		
+		$where = array(
+				'appoinment_id' => $id_cita
+			);
+		
+		$wpdb->update( $tablename, $data, $where ) ;
+		die;
+		
+	}
+	/* ************************************************* */ 
+	
+	
 
 }

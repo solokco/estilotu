@@ -16,6 +16,21 @@ td.xdsoft_date div {background-color:#703090;color:#FFF;padding:10px 20px;}
 .cupoDisponible #boton_reservar.servicio_agotado {background: #A53A3A;}
 .cupoDisponible #boton_reservar.servicio_cerrado {background: #CCC;color:#000;}
 
+/* ONLINE */
+.Consultas {}
+.Consultas .Consulta {float:left;width:100%;padding:20px;position:relative;margin-top:35px;margin-bottom:10px;box-shadow: 0px 0px 5px #999;border-radius: 10px;}
+.Consultas .Consulta header {position:absolute;left:-30px;top:-30px;}
+.Consultas .Consulta .Contenido_consulta {}
+.Consultas .Consulta .avatar img {border-radius:50%;}
+.Consultas .Consulta .Contenido_consulta .texto {float:left;width:70%;margin-top:35px;}
+.Consultas .Consulta .Contenido_consulta time {float:right;font-size:0.7em;position:absolute;top:-45px;right:-20px;}
+.Consultas .Consulta .Contenido_consulta time .dia_numero {font-size:2.2em;padding-top:1.5em;}
+#consulta-form {margin-top: 20px;}
+#consulta-form #consulta_cerrada {width:100%;float:left;background-color: #703090;padding:10px;text-align:center;color:#FFF !important;margin-top:20px;border-radius:50px;}
+#consulta-form textarea {width:100% !important;}
+#consulta-form input#submit-consulta {width:40%;}
+#consulta-form input#submit-consulta-cerrar {width:40%;background-color:#751F3F;}
+
 /* EVENTOS */
 time.icon {
 		  font-size: 1em; /* change icon size */

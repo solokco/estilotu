@@ -43,8 +43,8 @@ jQuery(document).ready(function( $ ) {
 	
 	jQuery("#calendario_servicio").datetimepicker({
 		
-		onGenerate:function( ct ){
-
+		onGenerate:function( ct ){		
+			
 			var desactivar = "";
 			var max_array;
 			

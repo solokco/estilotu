@@ -45,6 +45,8 @@ class Estilotu_Public {
 		
 		wp_register_style( 'et_servicios'	, plugin_dir_url( __FILE__ ) . 'assets/css/servicios/servicios.css', array() , $this->version, 'all' );
 		
+		wp_register_style( 'et_citas'	, plugin_dir_url( __FILE__ ) . 'assets/css/citas/citas.css', array() , $this->version, 'all' );
+		
 		wp_register_style( 'et_datetimepicker'	, plugin_dir_url( __FILE__ ) . 'assets/css/servicios/jquery.datetimepicker.css', array(), $this->version, 'all' );
 
 	}
@@ -73,7 +75,10 @@ class Estilotu_Public {
 	    wp_register_script( 'et_datetimepicker', plugin_dir_url( __FILE__ )	. 'assets/js/servicios/jquery.datetimepicker.full.min.js', array( 'jquery' ), $this->version, false );
 	    
 	    wp_register_script( 'et_front_end_servicios', plugin_dir_url( __FILE__ ) 		. 'assets/js/ajax/et_front_end_servicios.js', array( 'jquery' ), $this->version, true );
-		wp_localize_script( 'et_front_end_servicios', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );		
+		wp_localize_script( 'et_front_end_servicios', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+		
+		wp_register_script( 'et_front_end_citas', plugin_dir_url( __FILE__ ) 		. 'assets/js/ajax/et_front_end_citas.js', array( 'jquery' ), $this->version, true );
+		wp_localize_script( 'et_front_end_citas', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 	}
 	
 	/* **************************************************** */

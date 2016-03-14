@@ -91,10 +91,6 @@ class Estilotu_Servicios {
 			/* SI VIENE POST LO VOY A GUARDAR */
 			/* ************************************ */
 			if ( !empty($_POST) ):
-				
-				echo "<pre>";
-				print_r($_POST);
-				echo "</pre>";
 
 				$this->guardar_servicio();			
 			
@@ -138,12 +134,13 @@ class Estilotu_Servicios {
 				/* SI EL TIPO SELECCIONADO ES CUPOS 		*/
 				/* ************************************ 	*/
 				elseif ( $wp_query->query_vars['tipo_servicio'] == 'cupos' ):
+
+					$this->tipo_de_servicio = $wp_query->query_vars['tipo_servicio'];
 					
 					wp_enqueue_script( 'et-jquery-form-min');
 					wp_enqueue_script( 'smart-forms-steps');
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
-					// wp_enqueue_script( 'smart-forms-cloneya');
 					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
@@ -172,7 +169,6 @@ class Estilotu_Servicios {
 					wp_enqueue_script( 'smart-forms-steps');
 					wp_enqueue_script( 'smart-forms-validate');
 					wp_enqueue_script( 'smart-forms-additional-methods');
-					// wp_enqueue_script( 'smart-forms-cloneya');
 					wp_enqueue_script( 'et-lista_paises');	
 					wp_enqueue_script( 'et-showHide');
 					wp_enqueue_script( 'smart-forms-custom-validate');
@@ -198,7 +194,25 @@ class Estilotu_Servicios {
 				/* SI EL TIPO SELECCIONADO ES ONLINE 		*/
 				/* ************************************ 	*/
 				elseif ( $wp_query->query_vars['tipo_servicio'] == 'online' ):
-				
+					
+					$this->tipo_de_servicio = $wp_query->query_vars['tipo_servicio'];
+					
+					wp_enqueue_script( 'et-jquery-form-min');
+					wp_enqueue_script( 'smart-forms-steps');
+					wp_enqueue_script( 'smart-forms-validate');
+					wp_enqueue_script( 'smart-forms-additional-methods');
+
+					wp_enqueue_script( 'smart-forms-custom-validate');
+					wp_enqueue_script( 'smart-forms-custom');
+					wp_enqueue_script( 'servicios_agregar');
+					
+					wp_enqueue_style ('smart-form');
+					wp_enqueue_style ('smart-forms-min');
+					wp_enqueue_style ('smart-forms-purple');
+					wp_enqueue_style ('smart-forms-addons');
+					
+					require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/servicios/servicios-agregar-online-display.php' ;
+					
 				endif;
 			endif;	
 

@@ -27,7 +27,7 @@ class Estilotu_Miembro extends Estilotu_User {
 	/* ********************************************** */
 	/* VALIDO SI USUARIO TIENE PERMISO DE VER SECCION */
 	/* ********************************************** */
-	public function validar_miebro( $id_membresia = array(1,2,3,4,5,6,7) , $user_id = null ) {
+	public function validar_miebro( $user_id = null , $id_membresia = array(1,2,3,4,5,6,7) ) {
 	
 		global $current_user;
 
@@ -67,7 +67,7 @@ class Estilotu_Miembro extends Estilotu_User {
 		);
 		
 		
-		/* ********************************************* */
+			/* ********************************************* */
 			/* SI EL USUARIO MOSTRADO ES IGUAL AL LOGEADO */
 			/* ********************************************* */
 			if ( Estilotu_Miembro::validar_miebro() ):
@@ -254,7 +254,10 @@ class Estilotu_Miembro extends Estilotu_User {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/citas/class-citas-public.php'; //extends Estilotu_Servicios
 		
 		$citas = new EstiloTu_Citas( "realizadas" );
+
+		
 		add_action( 'bp_template_content', array ($citas , 'ver_citas' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 		
 	}
 	/* ******************************************************************* */
@@ -265,7 +268,7 @@ class Estilotu_Miembro extends Estilotu_User {
 	public function seccion_ver_citas_recibidas() {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/servicios/class-servicios-public.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/citas/class-citas-public.php'; //extends Estilotu_Servicios
-		
+				
 		$citas = new EstiloTu_Citas( "recibidas" );
 		add_action( 'bp_template_content', array ($citas , 'ver_citas' ) );
 		
