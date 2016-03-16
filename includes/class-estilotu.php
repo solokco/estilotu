@@ -190,6 +190,7 @@ class Estilotu {
 		$plugin_public 	= new Estilotu_Public( $this->get_plugin_name(), $this->get_version() );
 		$miembro_public = new Estilotu_Miembro( $this->get_plugin_name(), $this->get_version() );
 		$servicios_fe	= new Estilotu_Servicios_FrontEnd();
+		$user_class		= new Estilotu_User();
 		
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -197,9 +198,9 @@ class Estilotu {
 		$this->loader->add_filter( 'query_vars', $plugin_public, 'et_queryvars' );
 		$this->loader->add_filter( 'bp_notifications_get_registered_components', $miembro_public, 'et_bp_filter_notifications_get_registered_components' );
 		$this->loader->add_filter( 'bp_notifications_get_notifications_for_user', $miembro_public, 'et_bp_notifications' , 10, 5 );
-				
-		
+						
 		/* FRONT END */
+		$this->loader->add_filter( 'pre_get_posts', $servicios_fe, 'servicios_filter' );
 		$this->loader->add_action( 'et_mostrar_calendario', $servicios_fe, 'ver_calendario_servicios' );
 
 

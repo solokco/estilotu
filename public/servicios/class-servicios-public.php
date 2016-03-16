@@ -35,6 +35,7 @@ class Estilotu_Servicios {
 	public function __construct() {
 		
 		global $wpdb;
+		
 		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 		
 	}
@@ -522,6 +523,8 @@ class Estilotu_Servicios {
 		return false;
 	}
 	/* *********************************************** */
+	
+	
 	
 	
 	

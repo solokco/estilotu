@@ -36,7 +36,8 @@ class Estilotu_Servicios_FrontEnd {
 	
 	
 	public function __construct() {
-		
+		add_shortcode("et_listar_seccion_profesionales_activos", array ($this , "et_listar_seccion_profesionales_activos") );
+		add_shortcode("et_listar_profesionales_activos", array ($this , "et_listar_profesionales_activos") );
 		add_shortcode("et_ver_lista_servicios", array ($this , "listar_servicios" ) );
 		
 	}
@@ -396,5 +397,381 @@ class Estilotu_Servicios_FrontEnd {
 	    
 	    return $t1 - $t2;
 	}
+	
+	// ************************************************
+	//	SHORTCODE PARA AGRUPAR USUARIOS PROFESIONALES
+	// *************************************************
+	public function et_listar_seccion_profesionales_activos() { 
+		
+		$member_args = array('member_type' => array( 'profesional' ) ) ;
+		
+		do_action( 'bp_before_members_loop' );
+		
+		if ( bp_has_members( $member_args ) ) : ?>
+	
+		<div id="buddypress">
+		<style>
+			#buddypress #members-list li div.item-avatar {width:65%;height:auto;float:none; margin: 0px auto;border:none;}
+			#buddypress #members-list li div.item-avatar img {box-shadow:0px 0px 8px #333;}
+					
+			#buddypress #members-list div.item {display:inline-block;width:100%;}
+			
+			.user_services {text-align:center;padding:20px 0px;}
+			.user_services h3 a {color: #7d588e;}
+			
+			#buddypress #members-list .user_services li {list-style-type: circle;display:list-item;}
+			
+			#buddypress #members-list .item-meta {margin:10px 0px;text-align:center;}
+			
+		</style>
+			<div id="pag-top" class="pagination">
+		
+				<div class="pag-count" id="member-dir-count-top">
+		
+					<?php bp_members_pagination_count(); ?>
+		
+				</div>
+		
+				<div class="pagination-links" id="member-dir-pag-top">
+		
+					<?php bp_members_pagination_links(); ?>
+		
+				</div>
+		
+			</div>
+	
+			<?php do_action( 'bp_before_directory_members_list' ); ?>
+		
+			<ul id="members-list" class="item-list row kleo-isotope masonry">
+		
+				<?php while ( bp_members() ) : bp_the_member(); ?>
+			
+					<li class="kleo-masonry-item">
+						<div class="member-inner-list animated animate-when-almost-visible bottom-to-top">
+							<div class="item-avatar rounded">
+								<a href="<?php bp_member_permalink(); ?>"><?php bp_member_avatar('type=full&width=180&height=180'); ?></a>
+							</div>
+					
+							<div class="item">
+								<div class="item-title">
+									<a href="<?php bp_member_permalink(); ?>"><?php bp_member_name(); ?></a>
+								</div>
+		  
+								<?php do_action( 'bp_directory_members_item' ); ?>
+		  
+								<div class="user_social">
+									<!--
+									<?php
+	
+									if ( bp_get_member_profile_data( 'field=13' ) ) { ?>
+									
+										<a target='_blank' href="<?php echo bp_get_member_profile_data( 'field=13' ) ;?>">Web</a>
+										
+									<?php }
+										
+									if ( bp_get_member_profile_data( 'field=Facebook' ) ) { ?>
+									
+										<a target='_blank' href="<?php echo bp_get_member_profile_data( 'field=Facebook' ) ;?>">Facebook</a>
+										
+									<?php }
+										
+									if ( bp_get_member_profile_data( 'field=Twitter' ) ) { ?>
+									
+										<a target='_blank' href="<?php echo bp_get_member_profile_data( 'field=Twitter' ) ;?>">Twitter</a>
+										
+									<?php }
+										
+									if ( bp_get_member_profile_data( 'field=Instagram' ) ) { ?>
+									
+										<a target='_blank' href="<?php echo bp_get_member_profile_data( 'field=Instagram' ) ;?>">Instagram</a>
+										
+									<?php }
+										
+									if ( bp_get_member_profile_data( 'field=Google+' ) ) { ?>
+									
+										<a target='_blank' href="<?php echo bp_get_member_profile_data( 'field=Google+' ) ;?>">Google+</a>
+										
+									<?php }			
+									
+									
+										
+									?>
+									-->
+								</div>
+								
+								<div class="user_services">
+																									
+									<?php
+									$args = array(
+									  'post_type'   => 'servicios', 
+									  'post_status' => 'publish',
+									  'author'		=>	bp_get_member_user_id()
+									);
+									
+									$the_query = new WP_Query( $args );
+	
+									// The Loop
+									if ( $the_query->have_posts() ) { ?>
+									  
+									  <a class="vc_general vc_btn3 vc_btn3-size-sm vc_btn3-shape-rounded vc_btn3-style-modern vc_btn3-icon-left vc_btn3-color-violet" href="<?php bp_member_permalink(); ?>servicios/#item-nav" title="" target="_self"><i class="vc_btn3-icon entypo-icon entypo-icon-ticket"></i> Ver Servicios</a>
+									  
+									  <?php 
+									  echo '<ul>';
+									  while ( $the_query->have_posts() ) {
+									    $the_query->the_post();
+									    echo '<li><a href="'.get_permalink().'">' . get_the_title() . '</a></li>';
+									  }
+									  echo '</ul>';
+									  
+									  
+									} else {
+									  echo "<p>Sin servicios</p>";
+									}
+									/* Restore original Post Data */
+									wp_reset_postdata();							    
+								    
+								    
+									?>
+									
+								</div>
+								
+								
+								<div class="item-meta"><span class="activity"><?php bp_member_last_active(); ?></span></div>
+								
+			        		</div>
+		  
+							<div class="action">
+					
+								<?php do_action( 'bp_directory_members_actions' ); ?>
+					
+							</div>
+					
+						</div><!--end member-inner-list-->
+					</li>
+		
+				<?php endwhile; ?>
+	
+			</ul>
+	
+			<?php do_action( 'bp_after_directory_members_list' ); ?>
+	
+			<?php bp_member_hidden_fields(); ?>
+	
+			<div id="pag-bottom" class="pagination">
+		
+				<div class="pag-count" id="member-dir-count-bottom">
+		
+					<?php bp_members_pagination_count(); ?>
+		
+				</div>
+		
+				<div class="pagination-links" id="member-dir-pag-bottom">
+		
+					<?php bp_members_pagination_links(); ?>
+		
+				</div>
+		
+			</div>
+	
+		</div>
+		
+		<?php else: ?>
+	
+			<div id="message" class="info">
+				<p><?php _e( "Sorry, no members were found.", 'buddypress' ); ?></p>
+			</div>
+	
+		<?php endif; ?>
+	
+		<?php do_action( 'bp_after_members_loop' );
+	
+	}
+	
+	// ************************************************
+	//	SHORTCODE PARA AGRUPAR USUARIOS PROFESIONALES
+	// *************************************************
+	function et_listar_profesionales_activos($atts, $content=null, $code="") {
+		// examples: [et_listar_profesionales_activos avatar="false" email="false" levels="1,2"]
+		
+		extract(shortcode_atts(array(
+			'avatar' => NULL,
+			'email' => NULL,
+			'levels' => NULL,
+			'show_level' => NULL,
+			'show_search' => NULL,
+			'start_date' => NULL,
+			'perline' => 4,
+			'cantidad' => 12,
+			'animation' => '',
+			'rounded' => "",
+			'class' => ''
+		), $atts));
+		
+		global $wpdb;
+		
+		//turn 0's into falses
+		if($avatar === "0" || $avatar === "false" || $avatar === "no")
+			$avatar = false;
+		else
+			$avatar = true;
+		
+		if($email === "0" || $email === "false" || $email === "no")
+			$email = false;
+		else
+			$email = true;
+	
+		if($show_level === "0" || $show_level === "false" || $show_level === "no")
+			$show_level = false;
+		else
+			$show_level = true;
+	
+		if($show_search === "0" || $show_search === "false" || $show_search === "no")
+			$show_search = false;
+		else
+			$show_search = true;
+	
+		if($start_date === "0" || $start_date === "false" || $start_date === "no")
+			$start_date = false;
+		else
+			$start_date = true;
+	
+		ob_start();
+		if(isset($_REQUEST['ps']))
+			$s = $_REQUEST['ps'];
+		else
+			$s = "";
+		
+		if(isset($_REQUEST['pk']))
+			$key = $_REQUEST['pk'];
+		else
+			$key = "";
+			
+		if(isset($_REQUEST['pn']))
+			$pn = $_REQUEST['pn'];
+		else
+			$pn = 1;
+			
+		if($s)
+		{
+			$sqlQuery = "SELECT SQL_CALC_FOUND_ROWS u.ID, u.user_login, u.user_email, u.user_nicename, u.display_name, UNIX_TIMESTAMP(u.user_registered) as joindate, mu.membership_id, mu.initial_payment, mu.billing_amount, mu.cycle_period, mu.cycle_number, mu.billing_limit, mu.trial_amount, mu.trial_limit, UNIX_TIMESTAMP(mu.startdate) as startdate, UNIX_TIMESTAMP(mu.enddate) as enddate, m.name as membership FROM $wpdb->users u LEFT JOIN $wpdb->usermeta um ON u.ID = um.user_id LEFT JOIN $wpdb->pmpro_memberships_users mu ON u.ID = mu.user_id LEFT JOIN $wpdb->pmpro_membership_levels m ON mu.membership_id = m.id WHERE mu.status = 'active' AND mu.membership_id > 0 AND ";
+			
+			if(empty($key))
+				$sqlQuery .= "(u.user_login LIKE '%$s%' OR u.user_email LIKE '%$s%' OR u.display_name LIKE '%$s%' OR um.meta_value LIKE '%$s%') ";
+			else
+				$sqlQuery .= "(um.meta_key = '" . $wpdb->escape($key) . "' AND um.meta_value LIKE '%$s%') ";
+		
+			if($levels)
+				$sqlQuery .= " AND mu.membership_id IN(" . $levels . ") ";					
+				
+			$sqlQuery .= "GROUP BY u.ID ORDER BY user_registered DESC";
+		}
+		else
+		{
+			$sqlQuery = "SELECT SQL_CALC_FOUND_ROWS u.ID, u.user_login, u.user_email, u.user_nicename, u.display_name, UNIX_TIMESTAMP(u.user_registered) as joindate, mu.membership_id, mu.initial_payment, mu.billing_amount, mu.cycle_period, mu.cycle_number, mu.billing_limit, mu.trial_amount, mu.trial_limit, UNIX_TIMESTAMP(mu.startdate) as startdate, UNIX_TIMESTAMP(mu.enddate) as enddate, m.name as membership FROM $wpdb->users u LEFT JOIN $wpdb->pmpro_memberships_users mu ON u.ID = mu.user_id LEFT JOIN $wpdb->pmpro_membership_levels m ON mu.membership_id = m.id";
+			$sqlQuery .= " WHERE mu.membership_id > 0  AND mu.status = 'active' ";
+			if($levels)
+				$sqlQuery .= " AND mu.membership_id IN(" . $levels . ") ";
+			$sqlQuery .= "ORDER BY user_registered DESC";
+		}
+				
+		$theusers = $wpdb->get_results($sqlQuery);
+		$totalrows = $wpdb->get_var("SELECT FOUND_ROWS() as found_rows");
+		
+		ob_start();
+		
+		?>
+		
+		
+		<?php
+			if(!empty($theusers))
+			{
+				?>
+				<div class="pmpro_member_directory">
+					<?php
+					$count = 0;
+					$lista_usuarios = array();
+					foreach($theusers as $auser):
+						
+						$auser = get_userdata($auser->ID);
+	
+						$user_post_count = count_user_posts( $auser->ID , "servicios" );
+																		
+						if ( $user_post_count > 0 ):
+							
+							$lista_usuarios[] = $auser->ID;
+	
+						endif;																		
+	
+					endforeach; ?>
+					
+					<style>
+						.kleo-thumbs-images a img {max-width:120px; height:auto;}	
+					</style>
+					
+					<?php
+										
+					$output = $anim1 = '';
+					
+					$lista_usuarios = implode(",",$lista_usuarios);
+					
+					$params = array(
+						//'type' => "popular",
+						'per_page' => $cantidad,
+						'include' => $lista_usuarios,
+						
+					);
+					
+					if($perline != '') {
+						$class .= ' ' . $perline . '-thumbs';
+					}
+					
+					if ($animation != '') {
+						$anim1 = ' animate-when-almost-visible';
+						$class .= ' kleo-thumbs-animated th-' . $animation;
+					}
+					
+					if ($rounded == 'rounded') {
+						$class .= ' rounded';
+					}
+					
+					if ( bp_has_members( $params ) ){
+						$output .= '<div class="wpb_wrapper">';
+						$output .= '<div class="kleo-gallery'.$anim1.'">';
+						$output .= '<div class="kleo-thumbs-images '.$class.'">';
+							while( bp_members() ){
+				
+									bp_the_member();
+									$output .= '<a href="'. bp_get_member_permalink() .'" title="'. bp_get_member_name() .'">';
+											$output .= bp_get_member_avatar( array(	'type' => 'full', 'width' => '120', 'height' => '120' ));
+											$output .= kleo_get_img_overlay();
+									$output .= '</a>';	
+				
+							}
+						$output .= '</div>';	
+						$output .= '</div>';
+						$output .= '</div>';
+					}
+					?>
+				</div>
+				<?php
+					
+				echo $output;	
+			}	
+			else
+			{	
+				?>
+				<div class="pmpro_member_directory_message pmpro_message pmpro_error">No matching profiles found<?php if($s) { ?> within <em><?php echo ucwords(esc_html($s)); ?></em>. <a href="<?php echo get_permalink(); ?>">View All Members</a><?php } else { ?>.<?php } ?></div>
+				<?php					
+			}
+	
+		$temp_content = ob_get_contents();
+		ob_end_clean();
+		return $temp_content;
+	}
+	
+	// *************************************************
+
+	
+	// *************************************************
 	
 }
